@@ -1,7 +1,8 @@
 package org.example;
 
-import java.util.Scanner;
 import org.example.services.ApiChallengeService;
+
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
@@ -90,6 +91,8 @@ public class Main {
                 System.out.println("\nPressione Enter para continuar...");
                 sc.nextLine();
             }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 }

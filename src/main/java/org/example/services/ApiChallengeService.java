@@ -4,10 +4,7 @@ import org.example.clients.ApiChallengeClient;
 import org.example.clients.ApiResponse;
 import org.example.helpers.ExtractJsonHelper;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class ApiChallengeService {
     private static final String BaseURL = "https://apichallenges.eviltester.com";
@@ -202,7 +199,108 @@ public class ApiChallengeService {
         }
     }
 
-    public static void ex12() {
+    public static void ex12() throws InterruptedException {
         System.out.println("Exercício 12 Experimentos com a Simple API");
+
+        String generatedIsbn = null;
+        String createdItemId;
+
+        String urlItems = BaseURL + "/simpleapi/items";
+        String randomISBN = BaseURL + "/simpleapi/randomisbn";
+
+        System.out.println("\n1. GET todos os itens (estado inicial) ");
+        ApiResponse getItemsInitialResponse = apiChallengeClient.doGet(urlItems);
+        System.out.println("Status Code: " + getItemsInitialResponse.getStatusCode());
+        System.out.println("Response Body: " + getItemsInitialResponse.getResponseBody());
+
+        System.out.println("\n2. Gerar ISBN aleatório ");
+        ApiResponse getRandomIsbnResponse = apiChallengeClient.doGet(randomISBN);
+
+        if (getRandomIsbnResponse.getStatusCode() == 200) {
+            generatedIsbn = getRandomIsbnResponse.getResponseBody();
+            if (generatedIsbn != null) {
+                System.out.println("ISBN aleatório gerado: " + generatedIsbn);
+            } else {
+                System.out.println("Não foi possível extrair o ISBN aleatório.");
+            }
+        } else {
+            System.out.println("Falha ao gerar ISBN aleatório. Status: " + getRandomIsbnResponse.getStatusCode());
+        }
+
+        if (generatedIsbn == null) {
+            System.out.println("Não foi possível continuar com os exercícios de POST/PUT/DELETE sem um ISBN gerado.");
+            return;
+        }
+
+        System.out.println("\n3. Criar item com POST ");
+
+        String postItemBody = String.format("{\"isbn13\": \"%s\", \"type\": \"book\", \"price\": 8.53, \"numberinstock\": 14}", generatedIsbn);
+        System.out.println("Corpo da requisição POST: " + postItemBody);
+
+        ApiResponse postItemResponse = apiChallengeClient.doPost(urlItems, postItemBody);
+        System.out.println("Status Code: " + postItemResponse.getStatusCode());
+        System.out.println("url: " + urlItems);
+        System.out.println(postItemResponse.getResponseBody());
+
+        if (postItemResponse.getStatusCode() == 201) {
+            createdItemId = ExtractJsonHelper.value(postItemResponse.getResponseBody(), "id");
+            if (createdItemId != null) {
+                System.out.println("Item criado com sucesso. ID do item: " + createdItemId);
+            } else {
+                System.out.println("Item criado, mas não foi possível extrair o ID.");
+            }
+        } else {
+            createdItemId = null;
+            System.out.println("Falha ao criar item. Status Code: " + postItemResponse.getStatusCode());
+        }
+
+        if (createdItemId == null) {
+            System.out.println("Não foi possível continuar com os exercícios de PUT/DELETE sem o ID do item criado.");
+            return;
+        }
+
+        System.out.println("\n4. Atualizar item com PUT ");
+
+        String putItemUrl = urlItems + "/" + createdItemId;
+        String putItemBody = String.format("{\"id\": \"%s\",\"isbn13\": \"%s\", \"type\": \"book\", \"price\": 10.53, \"numberinstock\": 20}", createdItemId, generatedIsbn);
+
+        System.out.println("URL PUT: " + putItemUrl);
+        System.out.println("Corpo da requisição PUT: " + putItemBody);
+
+        ApiResponse putItemResponse = apiChallengeClient.doPut(putItemUrl, putItemBody);
+
+        if (putItemResponse.getStatusCode() == 200) {
+            System.out.println("Item atualizado com sucesso via PUT.");
+        } else {
+            System.out.println("Falha ao atualizar item. Status Code: " + putItemResponse.getStatusCode());
+        }
+
+        System.out.println("\n5. Remover item com DELETE ");
+
+        String deleteItemUrl = urlItems + "/" + createdItemId;
+
+        System.out.println("URL DELETE: " + deleteItemUrl);
+        ApiResponse deleteItemResponse = apiChallengeClient.doDelete(deleteItemUrl);
+        System.out.println(deleteItemResponse.getStatusCode());
+        System.out.println(deleteItemResponse.getResponseBody());
+
+        if (deleteItemResponse.getStatusCode() == 204 || deleteItemResponse.getStatusCode() == 200) {
+            System.out.println("Item removido com sucesso via DELETE.");
+        } else {
+            System.out.println("Falha ao remover item. Status Code: " + deleteItemResponse.getStatusCode());
+        }
+
+        System.out.println("\n6. GET todos os itens (estado final, após manipulações) ");
+        ApiResponse getItemsFinalResponse = apiChallengeClient.doGet(urlItems);
+        System.out.println("Status Code: " + getItemsFinalResponse.getStatusCode());
+        System.out.println("Response Body: " + getItemsFinalResponse.getResponseBody());
+
+        List<String> ids = Collections.singletonList(ExtractJsonHelper.value(getItemsFinalResponse.getResponseBody(), "id"));
+        boolean itemExists = ids.stream().anyMatch(id -> id.equals(createdItemId));
+        if (!itemExists) {
+            System.out.println("\nO item criado foi removido com sucesso.");
+        } else {
+            System.out.println("\nO item criado ainda existe, o que indica que a remoção falhou.");
+        }
     }
 }

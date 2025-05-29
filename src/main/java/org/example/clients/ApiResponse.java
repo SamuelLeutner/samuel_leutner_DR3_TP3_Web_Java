@@ -1,7 +1,7 @@
 package org.example.clients;
 
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 public class ApiResponse {
     private final int statusCode;

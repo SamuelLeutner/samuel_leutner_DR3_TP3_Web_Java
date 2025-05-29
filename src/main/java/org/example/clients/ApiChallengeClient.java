@@ -1,21 +1,22 @@
 package org.example.clients;
 
-import java.net.URI;
-import java.net.URL;
-import java.util.Map;
-import java.util.List;
-import java.io.IOException;
-import java.util.Collections;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class ApiChallengeClient {
     private static final int READ_TIMEOUT_MS = 5000;
     private static final int CONNECT_TIMEOUT_MS = 5000;
+    private static final String USER_AGENT = "Mozilla/5.0";
 
     public ApiResponse sendRequest(String urlString, String method, String requestBody, Map<String, String> headers) {
         HttpURLConnection connection = null;
@@ -31,6 +32,7 @@ public class ApiChallengeClient {
             connection.setRequestMethod(method);
             connection.setReadTimeout(READ_TIMEOUT_MS);
             connection.setConnectTimeout(CONNECT_TIMEOUT_MS);
+            connection.setRequestProperty("User-Agent", USER_AGENT);
 
             if (headers != null) {
                 for (Map.Entry<String, String> entry : headers.entrySet()) {
