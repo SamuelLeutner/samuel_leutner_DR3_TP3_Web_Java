@@ -3,6 +3,9 @@ package org.example.services;
 import org.example.clients.ApiChallengeClient;
 import org.example.clients.ApiResponse;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ApiChallengeService {
     private static final ApiChallengeClient apiChallengeClient = new ApiChallengeClient();
     private static final String BaseURL = "https://apichallenges.eviltester.com";
@@ -18,6 +21,25 @@ public class ApiChallengeService {
 
     public static void ex2() {
         System.out.println("Exercício 2 GET de entidade específica");
+
+        Map<Integer, String> responses = new HashMap<>();
+        for (int id = 1; id <= 8; id++) {
+            String url = BaseURL + "/sim/entities/" + id;
+            ApiResponse response = apiChallengeClient.doGet(url);
+            String responseBody = response.getResponseBody();
+
+            System.out.println("Status Code para entidade " + id + ": " + response.getStatusCode());
+            System.out.println("Response Body para entidade " + id + ": " + responseBody + "\n");
+
+            responses.put(id, responseBody);
+        }
+
+        for (int i = 1; i <= 8; i++) {
+            for (int j = i + 1; j <= 8; j++) {
+                boolean equal = responses.get(i).equals(responses.get(j));
+                System.out.println("Entidade " + i + " e " + j + " são iguais? " + equal);
+            }
+        }
     }
 
     public static void ex3() {
