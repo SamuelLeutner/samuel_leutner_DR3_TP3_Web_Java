@@ -2,13 +2,15 @@ package org.example.services;
 
 import org.example.clients.ApiChallengeClient;
 import org.example.clients.ApiResponse;
+import org.example.helpers.ExtractJsonHelper;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class ApiChallengeService {
-    private static final ApiChallengeClient apiChallengeClient = new ApiChallengeClient();
     private static final String BaseURL = "https://apichallenges.eviltester.com";
+    private static final ApiChallengeClient apiChallengeClient = new ApiChallengeClient();
 
     public static void ex1() {
         System.out.println("Exercício 1 GET simples de todas as entidades");
@@ -65,6 +67,24 @@ public class ApiChallengeService {
     public static Long ex5() {
         System.out.println("Exercício 5 POST criando uma nova entidade");
         Long userId = null;
+
+        String url = BaseURL + "/sim/entities";
+        String requestBody = "{\"name\": \"aluno\"}";
+
+        ApiResponse response = apiChallengeClient.doPost(url, requestBody);
+        String responseBody = response.getResponseBody();
+
+        System.out.println("Status Code: " + response.getStatusCode());
+        System.out.println("Response Body: " + responseBody);
+
+        if (response.getStatusCode() == 201) {
+            userId = Long.valueOf(Objects.requireNonNull(ExtractJsonHelper.value(responseBody, "id")));
+
+            System.out.println("ID da entidade criado: " + userId);
+        } else {
+            System.out.println("Falha ao criar entidade. Status Code: " + response.getStatusCode());
+        }
+
         return userId;
     }
 
