@@ -44,6 +44,12 @@ public class ApiChallengeService {
 
     public static void ex3() {
         System.out.println("Exercício 3 GET de entidade inexistente");
+
+        String url = BaseURL + "/sim/entities/13";
+        ApiResponse response = apiChallengeClient.doGet(url);
+
+        System.out.println("Status Code: " + response.getStatusCode());
+        System.out.println("Response Body: " + response.getResponseBody());
     }
 
     public static void ex4() {
