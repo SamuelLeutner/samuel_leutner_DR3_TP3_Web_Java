@@ -90,6 +90,12 @@ public class ApiChallengeService {
 
     public static void ex6(Long id) {
         System.out.println("Exercício 6 GET da entidade criada");
+
+        String url = BaseURL + "/sim/entities/" + id;
+        ApiResponse response = apiChallengeClient.doGet(url);
+
+        System.out.println("Status Code: " + response.getStatusCode());
+        System.out.println("Response Body: " + response.getResponseBody());
     }
 
     public static void ex7() {
