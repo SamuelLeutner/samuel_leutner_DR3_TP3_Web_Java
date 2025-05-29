@@ -159,6 +159,20 @@ public class ApiChallengeService {
 
     public static void ex10() {
         System.out.println("Exercício 10 DELETE inválido");
+
+        String url = BaseURL + "/sim/entities/2";
+
+        ApiResponse response = apiChallengeClient.doDelete(url);
+        Integer responseStatusCode = response.getStatusCode();
+
+        System.out.println("Status Code: " + responseStatusCode);
+        System.out.println("Response Body: " + response.getResponseBody());
+
+        if (responseStatusCode == 403) {
+            System.out.println("Tentativa de deletar entidade inválida capturada com sucesso.");
+        } else {
+            System.out.println("Falha ao capturar tentativa de deletar entidade inválida. Status Code: " + responseStatusCode);
+        }
     }
 
     public static void ex11() {
