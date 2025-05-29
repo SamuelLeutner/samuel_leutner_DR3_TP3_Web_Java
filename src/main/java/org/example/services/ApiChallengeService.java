@@ -140,6 +140,21 @@ public class ApiChallengeService {
 
     public static void ex9() {
         System.out.println("Exercício 9 DELETE de entidade válida");
+
+        String url = BaseURL + "/sim/entities/9";
+
+        ApiResponse response = apiChallengeClient.doDelete(url);
+        Integer responseStatusCode = response.getStatusCode();
+
+        System.out.println("Status Code: " + responseStatusCode);
+
+        if (responseStatusCode == 204) {
+            System.out.println("Entidade deletada com sucesso.");
+
+            ex6(9L);
+        } else {
+            System.out.println("Falha ao deletar entidade. Status Code: " + responseStatusCode);
+        }
     }
 
     public static void ex10() {
