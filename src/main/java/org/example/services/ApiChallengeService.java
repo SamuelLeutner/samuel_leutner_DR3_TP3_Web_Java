@@ -100,6 +100,22 @@ public class ApiChallengeService {
 
     public static void ex7() {
         System.out.println("Exercício 7 POST para atualizar uma entidade");
+
+        String url = BaseURL + "/sim/entities/10";
+        String requestBody = "{\"name\": \"atualizado\"}";
+
+        ApiResponse response = apiChallengeClient.doPost(url, requestBody);
+        String responseBody = response.getResponseBody();
+
+        System.out.println("Status Code: " + response.getStatusCode());
+        System.out.println("Response Body: " + responseBody);
+
+        if (response.getStatusCode() == 200) {
+            System.out.println("Entidade atualizada com sucesso.");
+            ex6(10L);
+        } else {
+            System.out.println("Falha ao atualizar entidade. Status Code: " + response.getStatusCode());
+        }
     }
 
     public static void ex8() {
