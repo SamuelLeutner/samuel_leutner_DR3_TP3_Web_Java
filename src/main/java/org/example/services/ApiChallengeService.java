@@ -54,6 +54,12 @@ public class ApiChallengeService {
 
     public static void ex4() {
         System.out.println("Exercício 4 GET com parâmetros na URL");
+
+        String url = BaseURL + "/sim/entities?categoria=teste&limite=5";
+        ApiResponse response = apiChallengeClient.doGet(url);
+
+        System.out.println("Status Code: " + response.getStatusCode());
+        System.out.println("Response Body: " + response.getResponseBody());
     }
 
     public static Long ex5() {
