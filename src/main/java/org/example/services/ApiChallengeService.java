@@ -5,6 +5,7 @@ import org.example.clients.ApiResponse;
 import org.example.helpers.ExtractJsonHelper;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -177,6 +178,28 @@ public class ApiChallengeService {
 
     public static void ex11() {
         System.out.println("Exercício 11 OPTIONS com verificação de métodos");
+
+        String url = BaseURL + "/sim/entities";
+
+        ApiResponse response = apiChallengeClient.doOptions(url);
+        Integer responseStatusCode = response.getStatusCode();
+        Map<String, List<String>> headers = response.getHeaders();
+
+        System.out.println("Status Code: " + responseStatusCode);
+
+        if (responseStatusCode == 204 || responseStatusCode == 200) {
+            System.out.println("Métodos HTTP permitidos:");
+            List<String> allowMethods = headers.get("Allow");
+            if (allowMethods != null) {
+                for (String method : allowMethods) {
+                    System.out.println("- " + method);
+                }
+            } else {
+                System.out.println("Cabeçalho 'Allow' não encontrado.");
+            }
+        } else {
+            System.out.println("Falha ao obter métodos permitidos. Status Code: " + responseStatusCode);
+        }
     }
 
     public static void ex12() {
